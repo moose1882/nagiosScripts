@@ -1,0 +1,105 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+def check_winperf_include_multi(item, params, info, winperf_counters, winperf_counters_keys):
+    #print item;
+    #print params;
+    # print info;
+    # stuff = item + params + info
+    status=0
+    instances=info[1][1:]
+    try:
+        instanceNum = instances.index(item)
+    except ValueError:
+        instanceNum = -1 # no match
+        return (3, "UNKNOWN - Instance not found")
+    #print "InstanceNum:",item,instanceNum
+    #print "winperf_counters_keys:",winperf_counters_keys
+    num_instances = int(info[1][0])
+    infotext=[]
+    perfdata=[]
+    for line in info[2:]:
+        #print "line[0]:",line[0]
+        try:
+            i = winperf_counters_keys.index(int(line[0]))
+        except ValueError:
+            i=-1
+            continue
+        if "rawcount" in line[-1]: #mass aggregate, don't use get_counter()
+            count_per = line[instanceNum]
+        else:
+            countername="winperf_sqlserver_%s_%s" % (item, line[0])
+            count_time,count_per = get_counter(countername, time.time(), int(line[instanceNum]))
+        if (winperf_counters[i][2]): #if infotext text exists
+            infotext += [winperf_counters[i][2] % float(count_per)]
+        #infotext += "%s: %s, " % (winperf_counters[i][1], str(count_per))
+        perfdata += [ (winperf_counters[i][1], "%f" % float(count_per)) ]
+        #perfdata += "%s=%s;; " % (winperf_counters[i][1], str(count_per))
+    
+    return (0, "OK - " + ", ".join(infotext),perfdata)
+
+def check_winperf_include(item, params, info, counter,winperf_counters,winperf_counters_keys):
+    infotext=[]
+    perfdata=[]
+    status=0
+    instances=info[1][1:]
+    try:
+        instanceNum = instances.index(item)
+    except ValueError:
+        instanceNum = -1 # no match
+        return (3, "UNKNOWN - Instance not found")
+    num_instances = int(info[1][0])
+    for line in info[2:]:
+        #print "line:",counter,item,line
+        try:
+            i = winperf_counters_keys.index(int(line[0]))
+        except ValueError:
+            continue
+        if "rawcount" in line[-1]: #mass aggregate, don't use get_counter()
+            count_per = line[instanceNum]
+        else:
+            countername="winperf_sqlserver_%s_%s_%s" % (counter,item, line[0])
+            count_time,count_per = get_counter(countername, time.time(), int(line[instanceNum]))
+        if (winperf_counters[i][2]): #if infotext text exists
+            infotext += [winperf_counters[i][2] % float(count_per)]
+        perfdata += [ (winperf_counters[i][1], "%f" % float(count_per)) ]
+    return (0, "OK - " + ", ".join(infotext),perfdata)
+
+def check_winperf_include_single(item, params, info, counter,winperf_counters,winperf_counters_keys):
+    status=0
+    infotext=[]
+    perfdata=[]
+    instanceNum=1
+    for line in info[2:]:
+        try:
+            i = winperf_counters_keys.index(int(line[0]))
+        except ValueError:
+            continue
+        if "rawcount" in line[-1]: #mass aggregate, don't use get_counter()
+            count_per = line[instanceNum]
+        else:
+            countername="winperf_sqlserver_%s_%s_%s" % (counter,item, line[0])
+            count_time,count_per = get_counter(countername, time.time(), int(line[instanceNum]))
+        if (winperf_counters[i][2]): #if infotext text exists
+            infotext += [winperf_counters[i][2] % float(count_per)]
+        perfdata += [ (winperf_counters[i][1], "%f" % float(count_per)) ]
+    return (0, "OK - " + ", ".join(infotext),perfdata)
+
+    
+def inventory_winperf_include_multi(checkname, info):
+    #inventory function for counters with multiple named instances
+    inventory = []
+    num_instances = int(info[1][0])
+    if num_instances > 0:
+        instances=info[1][2:];
+        return [ (instance, "", None) for instance in instances ]
+        #item, comment, params
+
+def inventory_winperf_include(checkname, info):
+    #inventory function for counters with a sinle instance
+    return [(None, checkname, None)] if len(info)>1 else []
+    #item, comment, params
+
+#check_info['winperf_sqlserver'] = (check_winperf_include, "w3svc %s", 1, inventory_winperf_include)
+
+# check_config_variables.append("winperf_sqlserver")

@@ -1,0 +1,8 @@
+/omd/sites/idaas_mon/var/log/thruk.log {
+	missingok
+	rotate 52
+	compress
+	delaycompress
+	notifempty
+	create 640 idaas_mon idaas_mon 
+}

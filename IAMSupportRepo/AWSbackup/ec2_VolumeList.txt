@@ -1,0 +1,54 @@
+vol-7a12ccbe
+TAG	Name	Prod AD 02 Data Drive
+vol-9c07de58
+TAG	Name	Prod AD 02 C Drive
+vol-e976d32d
+TAG	Name	Prod NAT 02 Root Drive
+vol-aab7136e
+TAG	Name	Prod SQL 02 Backup Drive
+vol-bdb71379
+TAG	Name	Prod SQL 02 C Drive
+vol-beb7137a
+TAG	Name	Prod SQL 02 Data Drive
+vol-51b71395
+TAG	Name	Prod SQL 02 Log Drive
+vol-88c70296
+TAG	Name	Software
+vol-ddc602c3
+TAG	Name	Prod-Gateway Log Drive
+vol-818b844a
+TAG	Name	Prod Proxy-02 C Drive
+vol-f2898639
+TAG	Name	Prod IIS-01 C Drive
+vol-4096998b
+TAG	Name	Prod AD C Drive
+vol-b5656d7e
+TAG	Name	Prod NAT Root
+vol-fde5ed36
+TAG	Name	Prod-Gateway C Drive
+vol-cef8f005
+TAG	Name	Prod AD Data drive
+vol-c0faf20b
+TAG	Name	Prod IIS Data Drive
+vol-c7fcf40c
+TAG	Name	Prod Proxy Data Drive
+vol-c6eae10d
+TAG	Name	Prod App C Drive
+vol-a72b216c
+TAG	Name	Prod app Data Drive
+vol-83b4a148
+TAG	Name	Prod CAM C Drive
+vol-99b4a152
+TAG	Name	Prod CAM Data Drive
+vol-131f0cd8
+TAG	Name	Prod SQL 01 Backup Drive
+vol-8a1e0d41
+TAG	Name	Prod SQL 01 Data Drive
+vol-9e1e0d55
+TAG	Name	Prod SQL 01 Log Drive
+vol-911e0d5a
+TAG	Name	Prod SQL 01 C Drive
+vol-29f1e3e2
+TAG	Name	Prod Mon Root Drive
+vol-caee4700
+TAG	Name	Prod Mon New root

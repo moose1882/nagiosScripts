@@ -1,0 +1,12 @@
+/omd/sites/idaas_mon/var/log/apache/*_log {
+	missingok
+	rotate 52
+	compress
+	delaycompress
+	notifempty
+	create 640 idaas_mon idaas_mon 
+	sharedscripts
+	postrotate
+		/omd/sites/idaas_mon/etc/init.d/apache reload
+	endscript
+}

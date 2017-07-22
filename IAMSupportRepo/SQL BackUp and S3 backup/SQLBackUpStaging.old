@@ -1,0 +1,255 @@
+' Move SQL backups that are older then 2 weeks to the S3Staging folder on e: Drive
+'To be run on Mondays, one day after the Full Backup on Sunday so two weeks ago = 15 days
+' D Furlotte 23/02/2016
+
+'DECLARATIONS
+Option Explicit
+DIM archiveDate
+DIM objFile, objPath, objFolder, diffPath,fullPath,sysFullPath,transPath,  RetVal
+DIM diffStage, fullStage, sysFullStage, transStage, stagingFolder, awsUpload
+DIM objFSO1,objFSO2, objFSO3, objFSO4,  objStartFolder, colFiles, objFileLog
+DIM i, dtmDate, intAge, objShell, ZipFileCmd, archiveName,extententionType
+DIM DiffZipCmd, FullZipCmd, TransZipCmd, sysDBZipCmd
+Set objFSO1 = CreateObject("Scripting.FileSystemObject")
+Set objFSO2 = CreateObject("Scripting.FileSystemObject")
+Set objFSO3 = CreateObject("Scripting.FileSystemObject")
+Set objFSO4 = CreateObject("Scripting.FileSystemObject")
+Set objShell = CreateObject("WScript.Shell")
+
+'establish the amount of days that file modified date will search for.
+archiveDate = 14
+
+'define file paths
+diffPath = "F:\DifferentialBackUps\" 'Path to SQL differential backups
+fullPath = "F:\FullBackUps\"
+sysFullPath = "F:\FullSystemDBBackUps\"
+transPath = "F:\TransBackUp\"
+diffStage = "E:\s3Staging\stage\DifferentialBackUps\" 'Path to SQL differential backups staging folder
+fullStage = "E:\s3Staging\stage\FullBackUps\"
+sysFullStage = "E:\s3Staging\stage\FullSystemDBBackUps\"
+transStage = "E:\s3Staging\stage\TransBackUp\"
+
+'''''''''''''''''
+'Housekeeping
+'''''''''''''''''
+' Set up the monitoring files
+' Create a failed.txt file and only rername it to success.txt upoon full script completion
+' That way if the script bails at any point, BB will pick up the failed.txt
+If objFSO2.FileExists("E:\ArchiveLogs\monitoring\completed.txt") Then
+	objFSO2.MoveFile "E:\ArchiveLogs\monitoring\completed.txt", "E:\ArchiveLogs\monitoring\failed.txt"
+Else
+	objFSO2.CreateTextFile("E:\ArchiveLogs\monitoring\failed.txt")
+End If
+
+' Open the session log file for appending
+	Set objFileLog = objFSO3.OpenTextFile("E:\ArchiveLogs\AWSBackup_session.log",8) 
+'''''''''''''''''
+'End Housekeeping
+'''''''''''''''''
+
+'Debug
+' Used to skip over the time sucking wait for full DB zipping
+ Set objFSO3 = CreateObject("Scripting.FileSystemObject")
+ If (objFSO3.FileExists("E:\s3Staging\debug.txt")) Then
+				logWriter  "Debug file exists! Skipping to sysFullBackUp Sub."   ' send2LOG
+	sysFullCopy
+	transCopy
+	uploadToAws
+ Else
+				logWriter ("Debug file does not exist! Starting the diffCopy Sub.")   ' send2LOG
+	diffCopy
+	FullBackUp
+	sysFullCopy
+	transCopy
+	uploadToAws
+ End If
+
+'''''''''''''''''
+'End of script Housekeeping
+'''''''''''''''''
+				logWriter  "Session Closed" ' send2LOG
+				logWriter  "**************" ' send2LOG
+	objFileLog.Close 'close the log file
+
+'Monitor file
+If objFSO2.FileExists("E:\ArchiveLogs\monitoring\failed.txt") Then
+	objFSO2.MoveFile "E:\ArchiveLogs\monitoring\failed.txt", "E:\ArchiveLogs\monitoring\completed.txt"
+Else
+	objFSO2.CreateTextFile("E:\ArchiveLogs\monitoring\completed.txt")
+End If
+	wscript.quit
+	
+REM **************
+REM diffCopy
+REM Copy the Differential backups'get 15 day old backups from the Diff Folder
+REM **************
+Sub diffCopy()
+				logWriter  "Starting Diff file copy"   ' send2LOG
+Set objStartFolder = objFSO1.GetFolder(diffPath)
+Set colFiles = objStartFolder.Files
+i = 0
+intAge = 0
+				logWriter  "starting to find the files"   ' send2LOG
+For Each objFile in colFiles
+    dtmDate = objFile.DateLastModified
+    intAge = DateDiff("d", dtmDate, Date)
+    If intAge >= archiveDate Then
+				objFSO1.CopyFile diffPath & objFile.Name, diffStage    ' send2LOG
+        i = i + 1
+	End If
+Next
+If i > 0 Then
+				logWriter  "Copied " & i & " files to : " & diffstage    ' send2LOG
+Else
+				logWriter  "No files have been copied to " & diffstage & " . Exiting this Sub routine"    ' send2LOG
+		Exit Sub
+End If
+				logWriter  "Starting to zip...."   ' send2LOG
+ZipFile "_SQL01_diffArchive", "*.bak", diffStage
+				logWriter  "Staring to clean up temp files"   ' send2LOG
+	cleanTempFile diffStage, "*.bak"
+	FullBackUp
+End Sub	
+	
+REM **************
+REM FullBackUp
+REM Copy the Full Backups'get 15 day old backups from the FullBackUp Folder 
+REM **************
+Sub FullBackUp()
+				logWriter  "Starting fullBackup file copy"   ' send2LOG
+Set objStartFolder = objFSO2.GetFolder(fullPath)
+Set colFiles = objStartFolder.Files
+i = 0
+intAge = 0
+				logWriter  "starting to find the files"   ' send2LOG
+For Each objFile in colFiles
+    dtmDate = objFile.DateLastModified
+    intAge = DateDiff("d", dtmDate, Date)
+	If intAge >= archiveDate Then
+		objFSO2.CopyFile fullPath & objFile.Name, fullStage 
+		i = i + 1
+	End If
+Next
+If i > 0 Then
+				logWriter  "Copied " & i & " files to : " & fullStage    ' send2LOG
+Else
+				logWriter  "No files have been copied to " & fullStage & " . Exiting this Sub routine"    ' send2LOG
+		Exit Sub
+End If
+				logWriter  "Starting to zip...."   ' send2LOG
+ZipFile	"_SQL01_FullBackupArchive", "*.bak", fullStage
+				logWriter  "FullBackUp is done!"   ' send2LOG
+				logWriter  "Staring to clean up temp files"   ' send2LOG
+	cleanTempFile fullStage, "*.bak"
+End Sub	
+	
+	
+REM **************
+REM sysFullCopy
+REM Copy the sys DBs'get 15 day old backups from the sysFullPath Folder 
+REM **************
+Sub sysFullCopy()
+				logWriter  "Starting sysFullCopy file copy"   ' send2LOG
+Set objStartFolder = objFSO3.GetFolder(sysFullPath)
+Set colFiles = objStartFolder.Files
+i = 0
+intAge = 0
+				logWriter  "starting to find the files"   ' send2LOG
+For Each objFile in colFiles
+    dtmDate = objFile.DateLastModified
+    intAge = DateDiff("d", dtmDate, Date)
+	If intAge >= archiveDate Then
+		objFSO3.CopyFile sysFullPath & objFile.Name, sysFullStage 
+        i = i + 1
+	End If
+Next
+If i > 0 Then
+				logWriter  "Copied " & i & " files to : " & sysFullStage    ' send2LOG
+Else
+				logWriter  "No files have been copied to " & sysFullStage & " . Exiting this Sub routine"    ' send2LOG
+		Exit Sub
+End If
+				logWriter  "Starting to zip...."   ' send2LOG
+ZipFile "_SQL01_SystemDBArchive", "*.bak", sysFullStage
+				logWriter  "sysFullCopy is done!"   ' send2LOG
+				logWriter  "Staring to clean up temp files"   ' send2LOG
+	cleanTempFile sysFullStage, "*.bak"
+End Sub
+
+
+REM **************
+REM transCopy()
+REM get 15 day + old backups from the transPath Folder 
+REM **************
+Sub transCopy()
+				logWriter  "Starting transCopy file copy"   ' send2LOG
+Set objStartFolder = objFSO4.GetFolder(transPath)
+Set colFiles = objStartFolder.Files
+i = 0
+intAge = 0
+
+For Each objFile in colFiles
+    dtmDate = objFile.DateLastModified
+    intAge = DateDiff("d", dtmDate, Date)
+	If intAge >= archiveDate Then
+		objFSO4.CopyFile transPath & objFile.Name, transStage 
+        i = i + 1
+	End If
+Next
+If i > 0 Then
+				logWriter  "Copied " & i & " files to : " & transStage    ' send2LOG
+Else
+				logWriter  "No files have been copied to " & transStage & " . Exiting this Sub routine"    ' send2LOG
+		Exit Sub
+End If
+				logWriter  "Starting to zip...."   ' send2LOG
+ZipFile "_SQL01_transArchive", "*.trn", transStage
+				logWriter  "transStage is done!"   ' send2LOG
+				logWriter  "Staring to clean up temp files"   ' send2LOG
+
+		cleanTempFile transStage, "*.trn"
+End Sub			
+
+REM **************
+REM Upload the zip files to AWS Bucket
+REM **************			
+Sub uploadToAws()	
+				logWriter  "starting the S3 upload."   ' send2LOG
+	awsUpload = "aws s3 mv E:\s3Staging\s3upload s3://prod-sql-01-archive/ --recursive"
+	RetVal = objShell.Run(awsUpload,0,true)
+	If RetVal = 0 then
+				logWriter  "Bucket uplaod of *.7z Sucessful. Exit Code = " &RetVal  ' send2LOG
+	Else 
+				logWriter  "Bucket uplaod of *.7z Failed. Exit Code = "  &RetVal  ' send2LOG
+	End If
+End Sub
+
+REM **************
+REM Zipping up the staged files 
+REM **************
+Sub zipFile(archiveName,extententionType, stagingFolder)
+    ZipFileCmd = "7z a -t7z E:\s3Staging\s3upload\" & DatePart("YYYY",Date) &  DatePart("m",Date) & DatePart("d",Date)& archiveName & ".7z " & stagingFolder & extententionType & " -mx9"
+				logWriter  "Starting to zip files with this command: " & ZipFileCmd   ' send2LOG
+	RetVal = objShell.Run(ZipFileCmd,0,true)
+	If RetVal = 0 then
+				logWriter  "Zipping of " & archiveName & ".7z sucessful" &RetVal  ' send2LOG
+	Else 
+				logWriter  "Zipping of " & archiveName & ".7z Failed. Exit code = " &RetVal  ' send2LOG
+	End If
+End Sub
+
+REM **************
+REM Cleaning up the staged files 
+REM **************
+Sub cleanTempFile(directory, extention)
+				logWriter "cleaning up " & directory &" files "' send2LOG
+	objFSO1.DeleteFile (directory & extention)
+				logWriter "cleaning up done."   ' send2LOG
+End Sub
+
+REM **************
+REM Write to log
+REM **************
+Sub logWriter(msg)
+				objFileLog.Write  Date & vbTab & Time & vbTab & msg &  VbCrLf  ' send2LOG
+End Sub

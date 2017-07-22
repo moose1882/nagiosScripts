@@ -1,0 +1,147 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+# +------------------------------------------------------------------+
+# |             ____ _               _        __  __ _  __           |
+# |            / ___| |__   ___  ___| | __   |  \/  | |/ /           |
+# |           | |   | '_ \ / _ \/ __| |/ /   | |\/| | ' /            |
+# |           | |___| | | |  __/ (__|   <    | |  | | . \            |
+# |            \____|_| |_|\___|\___|_|\_\___|_|  |_|_|\_\           |
+# |                                                                  |
+# | Copyright Mathias Kettner 2010             mk@mathias-kettner.de |
+# +------------------------------------------------------------------+
+#
+# This file is part of Check_MK.
+# The official homepage is at http://mathias-kettner.de/check_mk.
+#
+# check_mk is free software;  you can redistribute it and/or modify it
+# under the  terms of the  GNU General Public License  as published by
+# the Free Software Foundation in version 2.  check_mk is  distributed
+# in the hope that it will be useful, but WITHOUT ANY WARRANTY;  with-
+# out even the implied warranty of  MERCHANTABILITY  or  FITNESS FOR A
+# PARTICULAR PURPOSE. See the  GNU General Public License for more de-
+# ails.  You should have  received  a copy of the  GNU  General Public
+# License along with GNU Make; see the file  COPYING.  If  not,  write
+# to the Free Software Foundation, Inc., 51 Franklin St,  Fifth Floor,
+# Boston, MA 02110-1301 USA.
+
+#<<<winperf_Web_Service>>>
+#1336266699.37 2500
+#5 instances: _Total ineca Default_Web_Site cacti Ruby
+#2 0 0 0 0 0 large_rawcount
+#4 0 0 0 0 0 bulk_count
+#6 712 0 0 712 0 large_rawcount
+#8 712 0 0 712 0 bulk_count
+#10 712 0 0 712 0 large_rawcount
+#12 712 0 0 712 0 bulk_count
+#14 0 0 0 0 0 rawcount
+#16 0 0 0 0 0 counter
+#18 0 0 0 0 0 rawcount
+#20 0 0 0 0 0 counter
+#22 0 0 0 0 0 rawcount
+#24 0 0 0 0 0 counter
+#26 0 0 0 0 0 rawcount
+#28 0 0 0 0 0 rawcount
+#30 2 0 0 2 0 rawcount
+#32 2 0 0 2 0 counter
+#34 0 0 0 0 0 rawcount
+#36 0 0 0 0 0 counter
+#38 1 0 0 1 0 rawcount
+#40 0 0 0 0 0 rawcount
+#42 0 0 0 0 0 rawcount
+#44 1 0 0 1 0 rawcount
+#46 2 0 0 2 0 rawcount
+#48 2 0 0 2 0 counter
+#50 2 0 0 2 0 rawcount
+#52 2 0 0 2 0 counter
+#54 0 0 0 0 0 rawcount
+#56 0 0 0 0 0 counter
+#58 2 0 0 2 0 rawcount
+#60 2 0 0 2 0 counter
+#62 0 0 0 0 0 rawcount
+#64 0 0 0 0 0 counter
+#66 0 0 0 0 0 rawcount
+#68 0 0 0 0 0 counter
+#70 0 0 0 0 0 rawcount
+#72 0 0 0 0 0 counter
+#74 0 0 0 0 0 rawcount
+#76 0 0 0 0 0 counter
+#78 0 0 0 0 0 rawcount
+
+
+# sites to be inventorized (number are relative to counter base)
+
+winperf_w3svc = [
+    #id, datasource decription, infotext?
+    [2  ,"Total Bytes Sent"           ,'',0,0],
+    [4  ,"Bytes Sent/sec"             ,"Avg Bytes Sent/sec: %.2f" ,0,0],
+    [6  ,"Total Bytes Received"       ,'',0,0],
+    [8  ,"Bytes Received/sec"         ,'',0,0],
+    [12 ,"Bytes Total/sec"            ,'',0,0],
+    [16 ,"Files Sent/sec"             ,'',0,0],
+    [24 ,"Files/sec"                  ,'',0,0],
+    [26 ,"Current Anonymous Users"    ,'',0,0],
+    [28 ,"Current NonAnonymous Users" ,'',0,0],
+    [32 ,"Anonymous Users/sec"        ,", Anonymous Users/sec: %.2f" ,0,0],
+    [42 ,"Current Connections"        ,", Current Connections: %d" ,0,0],
+    [48 ,"Connection Attempts/sec"    ,'',0,0],
+    [60 ,"Get Requests/sec"           ,'',0,0],
+    [64 ,"Post Requests/sec"          ,'',0,0],
+]
+winperf_w3svc_keys=[(x[0]) for x in winperf_w3svc]
+
+#def inventory_winperf_w3svc(info):
+#    print info;
+#    return [];
+#    num_instances = int(info[1][0])
+#    if num_instances > 0:
+#        return [ (name, "msx_default_levels") for name in winperf_w3svc ]
+
+def check_winperf_w3svc(item, params, info):
+    #print item;
+    #print params;
+    # print info;
+    # stuff = item + params + info
+    status=0
+    instances=info[1][1:]
+    try:
+        instanceNum = instances.index(item)
+    except ValueError:
+        instanceNum = -1 # no match
+        return (3, "UNKNOWN - Instance not found")
+    #print "InstanceNum:",item,instanceNum
+    #print "winperf_w3svc_keys:",winperf_w3svc_keys
+    num_instances = int(info[1][0])
+    infotext=[]
+    perfdata=[]
+    for line in info[2:]:
+        #print "line[0]:",line[0]
+        try:
+            i = winperf_w3svc_keys.index(int(line[0]))
+        except ValueError:
+            #i=-1
+            continue
+        if "rawcount" in line[-1]: #mass aggregate, don't use get_counter()
+            count_per = line[instanceNum]
+        else:
+            countername="winperf_w3svc_%s_%s" % (item, line[0])
+            count_time,count_per = get_counter(countername, time.time(), int(line[instanceNum]))
+        if (winperf_w3svc[i][2]): #if infotext text exists
+            infotext += [winperf_w3svc[i][2] % float(count_per)]
+        #infotext += "%s: %s, " % (winperf_w3svc[i][1], str(count_per))
+        perfdata += [ (winperf_w3svc[i][1], "%f" % float(count_per)) ]
+        #perfdata += "%s=%s;; " % (winperf_w3svc[i][1], str(count_per))
+    
+    return (0, "OK - " + "".join(infotext),perfdata)
+
+def inventory_winperf_w3svc(checkname, info):
+    # begin with empty inventory
+    inventory = []
+    #print checkname;
+    num_instances = int(info[1][0])
+    if num_instances > 0:
+        instances=info[1][2:];
+        return [ (instance, "", None) for instance in instances ]
+
+check_info['winperf_w3svc'] = (check_winperf_w3svc, "w3svc %s", 1, inventory_winperf_w3svc)
+
+# check_config_variables.append("winperf_w3svc")

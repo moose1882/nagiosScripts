@@ -1,0 +1,87 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+# Example output from agent:
+# <<<winperf_dell_sts>>>
+# 1432707976.47 9178
+# 2 37 rawcount
+# 4 37 counter
+# 6 6199182 average_timer
+# 8 37 average_base
+# 10 25 rawcount
+# 12 25 counter
+# 14 0 average_timer
+# 16 0 average_base
+# 18 5 rawcount
+# 20 49 rawcount
+# 22 49 counter
+# 24 49 rawcount
+# 26 0 rawcount
+# 28 25 rawcount
+# 30 0 rawcount
+# 32 0 rawcount
+# 34 0 rawcount
+# 36 2 rawcount
+# 38 0 rawcount
+# 40 0 rawcount
+# 42 90 rawcount
+# 44 3228 rawcount
+# 46 90 rawcount
+# 48 0 rawcount
+# 50 165 rawcount
+# 52 165 rawcount
+# 54 0 rawcount
+# 56 0 counter
+# 58 26 rawcount
+# 60 26 counter
+# 62 0 rawcount
+# 64 1 rawcount
+# 66 1 counter
+# 68 0 rawcount
+# 70 0 counter
+
+# Default warn/crit levels for length of queues
+dell_sts_levels = (500, 2000)
+
+# Queues to be inventorized (number are relative to counter base)
+winperf_dell_sts = {
+   "Active Remote Delivery"  :  "2",
+   "Retry Remote Delivery"   :  "4",
+   "Active Mailbox Delivery" :  "6",
+   "Poison Queue Length"     :  "44",
+}
+
+def inventory_winperf_dell_sts(info):
+    num_instances = int(info[1][0])
+    if num_instances > 0:
+        return [ (name, "dell_sts_default_levels") for name in winperf_dell_sts ]
+
+def check_winperf_dell_sts(item, params, info):
+    num_instances = int(info[1][0])
+    if num_instances < 1:
+        return (3, "no counters available, transport service running?")
+
+    for line in info[2:]:
+        if line[0] == winperf_dell_sts.get(item):
+            length = int(line[-2])
+            warn, crit = params
+            perfdata = [("length", length, warn, crit)]
+            infotext = "%d entries" % length
+            if length >= crit:
+                return (2, infotext, perfdata)
+            elif length >= warn:
+                return (1, infotext, perfdata)
+            return (0, infotext, perfdata)
+
+    return (3, "counter not found")
+
+
+check_config_variables.append("winperf_dell_sts")
+
+check_info["winperf_dell_sts"] = {
+    'check_function':          check_winperf_dell_sts,
+    'inventory_function':      inventory_winperf_dell_sts,
+    'service_description':     'dell_sts %s',
+    'has_perfdata':            True,
+    'group':                   'dell_sts',
+}

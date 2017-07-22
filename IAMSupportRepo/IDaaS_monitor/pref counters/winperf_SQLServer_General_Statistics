@@ -1,0 +1,48 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+# sites to be inventorized (number are relative to counter base)
+counters_winperf_SQLServer_General_Statistics = [
+    #id, datasource decription, infotext?
+    #[0 ,"SQLServer:General Statistics"    ,""    ,0,0],
+    #[2 ,"Mars Deadlocks"                  ,"Mars Deadlocks: %.2f"                  ,0,0],
+    #[4 ,"SOAP Session Initiate Requests"  ,"SOAP Session Initiate Requests: %.2f"  ,0,0],
+    #[6 ,"Trace Event Notification Queue"  ,"Trace Event Notification Queue: %.2f"  ,0,0],
+    #[8 ,"SOAP Session Terminate Requests" ,"SOAP Session Terminate Requests: %.2f" ,0,0],
+    [10,"User Connections"                ,"User Connections: %.2f"                ,0,0],
+    [12,"Processes blocked"               ,"Processes blocked: %.2f"               ,0,0],
+    #[14,"HTTP Authenticated Requests"     ,"HTTP Authenticated Requests: %.2f"     ,0,0],
+    #[16,"Temp Tables Creation Rate"       ,"Temp Tables Creation Rate: %.2f"       ,0,0],
+    #[18,"Connection Reset/sec"            ,""            ,0,0],
+    [20,"Transactions"                    ,"Transactions: %.2f"                    ,0,0],
+    #[22,"Active Temp Tables"              ,""              ,0,0],
+    #[24,"Tempdb recovery unit id"         ,"Tempdb recovery unit id: %.2f"         ,0,0],
+    #[26,"Tempdb rowset id"                ,"Tempdb rowset id: %.2f"                ,0,0],
+    #[28,"Temp Tables For Destruction"     ,"Temp Tables For Destruction: %.2f"     ,0,0],
+    [30,"Logical Connections"             ,"Logical Connections: %.2f"             ,0,0],
+    #[32,"SQL Trace IO Provider Lock Waits","SQL Trace IO Provider Lock Waits: %.2f",0,0],
+    #[34,"Non-atomic yield rate"           ,"Non-atomic yield rate: %.2f"           ,0,0],
+    #[36,"SOAP Empty Requests"             ,"SOAP Empty Requests: %.2f"             ,0,0],
+    #[38,"Logins/sec"                      ,"Logins/sec: %.2f"                      ,0,0],
+    #[40,"SOAP WSDL Requests"              ,"SOAP WSDL Requests: %.2f"              ,0,0],
+    #[42,"SOAP SQL Requests"               ,"SOAP SQL Requests: %.2f"               ,0,0],
+    #[44,"SOAP Method Invocations"         ,"SOAP Method Invocations: %.2f"         ,0,0],
+    #[46,"Logouts/sec"                     ,""                     ,0,0],
+    #[48,"Event Notifications Delayed Drop","",0,0],
+]
+
+counters_winperf_SQLServer_General_Statistics_keys=[(x[0]) for x in counters_winperf_SQLServer_General_Statistics]
+
+check_includes['winperf_SQLServer_General_Statistics'] = [ "sqlserver.include" ]
+
+def check_SQLServer_General_Statistics(item, params, info):
+    return check_winperf_include_single(item, params, info,"General_Statistics",counters_winperf_SQLServer_General_Statistics,counters_winperf_SQLServer_General_Statistics_keys)
+
+#def inventory_SQLServer_General_Statistics(checkname, info):
+#    print "inventory_SQLServer_General_Statistics:",checkname,info
+#    print inventory_winperf_include(checkname, info)
+#    return inventory_winperf_include(checkname, info)
+
+check_info['winperf_SQLServer_General_Statistics'] = (check_SQLServer_General_Statistics, "SQL General Statistics", 1, inventory_winperf_include)
+#check_info['winperf_SQLServer_General_Statistics'] = (check_SQLServer_General_Statistics, "SQL General Statistics", 1, inventory_SQLServer_General_Statistics)
+

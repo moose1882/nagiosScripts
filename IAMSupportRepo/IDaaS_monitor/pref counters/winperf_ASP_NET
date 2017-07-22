@@ -1,0 +1,141 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+check_includes['winperf_ASP_NET_Apps_v4'] = [ "winperf.include" ]
+check_includes['winperf_ASP_NET_Apps_v2'] = [ "winperf.include" ]
+
+counters_winperf_ASP_NET_Apps_v4 = [
+    ##[0  ,"ASP.NET Apps v4.0.30319"                  ,"ASP.NET Apps v4.0.30319: %.2f"                  ,0,0],
+    #[2  ,"Application Restarts"                     ,""                     ,0,0],
+    #[4  ,"Applications Running"                     ,""                     ,0,0],
+    ##[6  ,"Requests Disconnected"                    ,""                    ,0,0],
+    [8  ,"Request Execution Time"                   ,"Request Execution Time: %.2f"                   ,0,0],
+    ##[10 ,"Requests Rejected"                        ,"Requests Rejected: %.2f"                        ,0,0],
+    ##[12 ,"Requests Queued"                          ,"Requests Queued: %.2f"                          ,0,0],
+    #[14 ,"Worker Processes Running"                 ,""                 ,0,0],
+    #[16 ,"Worker Process Restarts"                  ,""                  ,0,0],
+    [18 ,"Request Wait Time"                        ,""                        ,0,0],
+    ##[20 ,"State Server Sessions Active"             ,"State Server Sessions Active: %.2f"             ,0,0],
+    ##[22 ,"State Server Sessions Abandoned"          ,"State Server Sessions Abandoned: %.2f"          ,0,0],
+    ##[24 ,"State Server Sessions Timed Out"          ,"State Server Sessions Timed Out: %.2f"          ,0,0],
+    ##[26 ,"State Server Sessions Total"              ,"State Server Sessions Total: %.2f"              ,0,0],
+    #[28 ,"Requests Current"                         ,"Requests Current: %.2f"                         ,0,0],
+    ##[30 ,"Audit Success Events Raised"              ,"Audit Success Events Raised: %.2f"              ,0,0],
+    ##[32 ,"Audit Failure Events Raised"              ,"Audit Failure Events Raised: %.2f"              ,0,0],
+    ##[34 ,"Error Events Raised"                      ,"Error Events Raised: %.2f"                      ,0,0],
+    ##[36 ,"Request Error Events Raised"              ,"Request Error Events Raised: %.2f"              ,0,0],
+    ##[38 ,"Infrastructure Error Events Raised"       ,"Infrastructure Error Events Raised: %.2f"       ,0,0],
+    #[40 ,"Anonymous Requests"                       ,""                       ,0,0],
+    #[42 ,"Anonymous Requests/Sec"                   ,""                   ,0,0],
+    ##[44 ,"Cache Total Entries"                      ,"Cache Total Entries: %.2f"                      ,0,0],
+    ##[46 ,"Cache Total Turnover Rate"                ,"Cache Total Turnover Rate: %.2f"                ,0,0],
+    ##[48 ,"Cache Total Hits"                         ,"Cache Total Hits: %.2f"                         ,0,0],
+    ##[50 ,"Cache Total Misses"                       ,"Cache Total Misses: %.2f"                       ,0,0],
+    [52 ,"Cache Total Hit Ratio"                    ,""                    ,0,0],
+    ##[54 ,"Cache Total Hit Ratio Base"               ,"Cache Total Hit Ratio Base: %.2f"               ,0,0],
+    ##[56 ,"Cache API Entries"                        ,"Cache API Entries: %.2f"                        ,0,0],
+    ##[58 ,"Cache API Turnover Rate"                  ,"Cache API Turnover Rate: %.2f"                  ,0,0],
+    ##[60 ,"Cache API Hits"                           ,"Cache API Hits: %.2f"                           ,0,0],
+    ##[62 ,"Cache API Misses"                         ,"Cache API Misses: %.2f"                         ,0,0],
+    ##[64 ,"Cache API Hit Ratio"                      ,"Cache API Hit Ratio: %.2f"                      ,0,0],
+    ##[66 ,"Cache API Hit Ratio Base"                 ,"Cache API Hit Ratio Base: %.2f"                 ,0,0],
+    ##[68 ,"Output Cache Entries"                     ,"Output Cache Entries: %.2f"                     ,0,0],
+    ##[70 ,"Output Cache Turnover Rate"               ,"Output Cache Turnover Rate: %.2f"               ,0,0],
+    ##[72 ,"Output Cache Hits"                        ,"Output Cache Hits: %.2f"                        ,0,0],
+    ##[74 ,"Output Cache Misses"                      ,"Output Cache Misses: %.2f"                      ,0,0],
+    ##[76 ,"Output Cache Hit Ratio"                   ,"Output Cache Hit Ratio: %.2f"                   ,0,0],
+    ##[78 ,"Output Cache Hit Ratio Base"              ,"Output Cache Hit Ratio Base: %.2f"              ,0,0],
+    ##[80 ,"Compilations Total"                       ,"Compilations Total: %.2f"                       ,0,0],
+    ##[82 ,"Debugging Requests"                       ,"Debugging Requests: %.2f"                       ,0,0],
+    ##[84 ,"Errors During Preprocessing"              ,"Errors During Preprocessing: %.2f"              ,0,0],
+    ##[86 ,"Errors During Compilation"                ,"Errors During Compilation: %.2f"                ,0,0],
+    ##[88 ,"Errors During Execution"                  ,"Errors During Execution: %.2f"                  ,0,0],
+    ##[90 ,"Errors Unhandled During Execution"        ,"Errors Unhandled During Execution: %.2f"        ,0,0],
+    ##[92 ,"Errors Unhandled During Execution/Sec"    ,"Errors Unhandled During Execution/Sec: %.2f"    ,0,0],
+    ##[94 ,"Errors Total"                             ,"Errors Total: %.2f"                             ,0,0],
+    ##[96 ,"Errors Total/Sec"                         ,"Errors Total/Sec: %.2f"                         ,0,0],
+    ##[98 ,"Pipeline Instance Count"                  ,"Pipeline Instance Count: %.2f"                  ,0,0],
+    [100,"Request Bytes In Total"                   ,""                   ,0,0],
+    [102,"Request Bytes Out Total"                  ,""                  ,0,0],
+    [104,"Requests Executing"                       ,"Executing: %.2f"                       ,0,0],
+    [106,"Requests Failed"                          ,"Failed: %.2f"                          ,0,0],
+    [108,"Requests Not Found"                       ,"Not Found: %.2f"                       ,0,0],
+    #[110,"Requests Not Authorized"                  ,""                  ,0,0],
+    [112,"Requests In Application Queue"            ,""            ,0,0],
+    [114,"Requests Timed Out"                       ,"Timed Out: %.2f"                       ,0,0],
+    [116,"Requests Succeeded"                       ,"Succeeded: %.2f"                       ,0,0],
+    [118,"Requests Total"                           ,"Total: %.2f"                           ,0,0],
+    [120,"Requests/Sec"                             ,"Requests/Sec: %.2f"                             ,0,0],
+    [122,"Sessions Active"                          ,""                          ,0,0],
+    [124,"Sessions Abandoned"                       ,""                       ,0,0],
+    [126,"Sessions Timed Out"                       ,""                       ,0,0],
+    [128,"Sessions Total"                           ,""                           ,0,0],
+    #[130,"Transactions Aborted"                     ,""                     ,0,0],
+    #[132,"Transactions Committed"                   ,""                   ,0,0],
+    #[134,"Transactions Pending"                     ,""                     ,0,0],
+    #[136,"Transactions Total"                       ,""                       ,0,0],
+    #[138,"Transactions/Sec"                         ,""                         ,0,0],
+    ##[140,"Session State Server connections total"   ,"Session State Server connections total: %.2f"   ,0,0],
+    #[142,"Session SQL Server connections total"     ,""     ,0,0],
+    ##[144,"Events Raised"                            ,"Events Raised: %.2f"                            ,0,0],
+    ##[146,"Events Raised/Sec"                        ,"Events Raised/Sec: %.2f"                        ,0,0],
+    [148,"Application Lifetime Events"              ,""              ,0,0],
+    [150,"Application Lifetime Events/Sec"          ,""          ,0,0],
+    [152,"Error Events Raised"                      ,""                      ,0,0],
+    [154,"Error Events Raised/Sec"                  ,""                  ,0,0],
+    [156,"Request Error Events Raised"              ,""              ,0,0],
+    [158,"Request Error Events Raised/Sec"          ,""          ,0,0],
+    ##[160,"Infrastructure Error Events Raised"       ,"Infrastructure Error Events Raised: %.2f"       ,0,0],
+    ##[162,"Infrastructure Error Events Raised/Sec"   ,"Infrastructure Error Events Raised/Sec: %.2f"   ,0,0],
+    #[164,"Request Events Raised"                    ,""                    ,0,0],
+    #[166,"Request Events Raised/Sec"                ,""                ,0,0],
+    ##[168,"Audit Success Events Raised"              ,"Audit Success Events Raised: %.2f"              ,0,0],
+    ##[170,"Audit Failure Events Raised"              ,"Audit Failure Events Raised: %.2f"              ,0,0],
+    ##[172,"Membership Authentication Success"        ,"Membership Authentication Success: %.2f"        ,0,0],
+    ##[174,"Membership Authentication Failure"        ,"Membership Authentication Failure: %.2f"        ,0,0],
+    ##[176,"Forms Authentication Success"             ,"Forms Authentication Success: %.2f"             ,0,0],
+    ##[178,"Forms Authentication Failure"             ,"Forms Authentication Failure: %.2f"             ,0,0],
+    ##[180,"Viewstate MAC Validation Failure"         ,"Viewstate MAC Validation Failure: %.2f"         ,0,0],
+    [182,"Request Execution Time"                   ,"Request Execution Time: %.2f"                   ,0,0],
+    #[184,"Requests Disconnected"                    ,""                    ,0,0],
+    #[186,"Requests Rejected"                        ,""                        ,0,0],
+    [188,"Request Wait Time"                        ,"Request Wait Time: %.2f"                        ,0,0],
+    ##[190,"Cache % Machine Memory Limit Used"        ,"Cache % Machine Memory Limit Used: %.2f"        ,0,0],
+    ##[192,"Cache % Machine Memory Limit Used Base"   ,"Cache % Machine Memory Limit Used Base: %.2f"   ,0,0],
+    ##[194,"Cache % Process Memory Limit Used"        ,"Cache % Process Memory Limit Used: %.2f"        ,0,0],
+    ##[196,"Cache % Process Memory Limit Used Base"   ,"Cache % Process Memory Limit Used Base: %.2f"   ,0,0],
+    ##[198,"Cache Total Trims"                        ,"Cache Total Trims: %.2f"                        ,0,0],
+    ##[200,"Cache API Trims"                          ,"Cache API Trims: %.2f"                          ,0,0],
+    ##[202,"Output Cache Trims"                       ,"Output Cache Trims: %.2f"                       ,0,0],
+    ##[204,"% Managed Processor Time (estimated)"     ,"% Managed Processor Time (estimated): %.2f"     ,0,0],
+    ##[206,"% Managed Processor Time Base (estimated)","% Managed Processor Time Base (estimated): %.2f",1,0],
+    #[208,"Managed Memory Used (estimated)"          ,"Managed Memory Used (estimated): %.2f"          ,0,0],
+]
+
+counters_winperf_ASP_NET_Apps_v4_keys=[(x[0]) for x in counters_winperf_ASP_NET_Apps_v4]
+
+
+def check_ASP_NET_Apps_v4(item, params, info):
+    return check_winperf_include(item, params, info, "ASP_NET_Apps_v4",counters_winperf_ASP_NET_Apps_v4,counters_winperf_ASP_NET_Apps_v4_keys)
+
+def check_ASP_NET_Apps_v2(item, params, info):
+    return check_winperf_include(item, params, info, "ASP_NET_Apps_v2",counters_winperf_ASP_NET_Apps_v4,counters_winperf_ASP_NET_Apps_v4_keys)
+
+
+#def inventory_ASP_NET_Apps_v4(checkname, info):
+#    return inventory_winperf_include(checkname, info)
+
+
+
+#1. the check function
+#2. the service description (%s will be replaced with the check item. Do not use %s if your check uses None as check item)
+#3. a 1 if that check outputs performance data, a 0 if not
+#4. the inventory function or no_inventory_possible, if your check does not support inventory
+
+#check_info['name_of_check'] = (check_funtion_name, "Service Description %s", 1, inventory_ASP_NET_Apps_v4)
+
+#check_info['winperf_ASP_NET_Apps_v4'] = (check_ASP_NET_Apps_v4, "SQL DB %s", 1, inventory_winperf_include_multi)
+check_info['winperf_ASP_NET_Apps_v4'] = (check_ASP_NET_Apps_v4, "ASPNETApps4 %s", 1, inventory_winperf_include_multi)
+check_info['winperf_ASP_NET_Apps_v2'] = (check_ASP_NET_Apps_v2, "ASPNETApps2 %s", 1, inventory_winperf_include_multi)
+
+# check_config_variables.append("winperf_sqlserver")

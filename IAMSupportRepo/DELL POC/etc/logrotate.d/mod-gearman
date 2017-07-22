@@ -1,0 +1,11 @@
+/omd/sites/idaas_mon/var/log/gearman/*.log {
+	missingok
+	rotate 52
+	compress
+	delaycompress
+	notifempty
+	create 640 idaas_mon idaas_mon 
+	postrotate
+		/omd/sites/idaas_mon/bin/omd reload gearman_worker > /dev/null
+	endscript
+}

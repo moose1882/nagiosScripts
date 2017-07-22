@@ -1,0 +1,8 @@
+/omd/sites/idaas/var/nagios/livestatus.log {
+	missingok
+	rotate 7
+	compress
+	delaycompress
+	notifempty
+	create 640 idaas idaas
+}

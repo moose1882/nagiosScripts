@@ -1,0 +1,13 @@
+C:\>New-MailboxExportRequest -Mailbox XXXXX -FilePath \\annette\ExchangePST\XXXXX.pst (-Verbose)
+
+C:\>Get-MailboxStatistics XXXXX | fl 
+
+C:\>Clean-MailboxDatabase -Identity XXXXX
+
+C:\>Get-MailboxExportRequest | where {$_.status -eq "Completed"} | Remove-MailboxExportRequest
+
+C:\>Get-CASMailbox -Identity XXXXX
+
+C:\>Get-MailboxStatistics -Database "Mailbox Database XXXXXXXXXX" | Select DisplayName, ItemCount, TotalItemSize | Sort-Object TotalItemSize -Descending | Export-CSV C:\MBSizes.csv
+
+C:\>Get-MailboxDatabase -Status | select ServerName,Name,DatabaseSize

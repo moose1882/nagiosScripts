@@ -1,0 +1,44 @@
+Enable Users For Lync - creates Lync accounts automatically based on group membership
+
+1) Log in to the Lync server
+
+2) Open a PowerShell prompt as an administrator
+
+3) Change the execution policy for scripts to remote signed using the following command "Set-ExecutionPolicy RemoteSigned"
+
+4) Copy the EnableUsersForLync.ps1 script to the Scripts folder on the hard drive of the Lync server ('C:\Scripts' - create this if it does not exist)
+
+5) Edit the details in the script to use the security group that has been created in AD for Lync users ('-LdapFilter')
+
+6) Edit the details in the script to point to the correct registrar pool ('-RegistrarPool')
+
+7) Edit the details in the script to use the correct SIP Domain ('-SipDomain')
+
+8) Create a scheduled task to run the script daily in the early morning using the following settings:
+
+ - Service account: lyncservice (needs log on locally rights)
+ - General tab: Run whether user is logged in or not, Run with highest privileges, Hidden
+ - Triggers tab: Daily
+ - Actions tab: Start a program where the program is powershell.exe and the arguments are '-file "C:\Scripts\EnableUsersForLync.ps1"'
+ - Settings tab: Allow task to be run on demand, Run task as soon as possible after a scheduled start is missed, If the task fails restart every 1 minute, Attempt to restart up to 3 times, Stop the task if it runs longer than 1 hour, If the running task does not end when requested force it to stop
+
+
+Update Lync Contacts - updates Lync contact list for all users with all users
+
+1) Log in to the Lync server
+
+2) Open a PowerShell prompt as an administrator
+
+3) Change the execution policy for scripts to remote signed using the following command "Set-ExecutionPolicy RemoteSigned"
+
+4) Copy the UpdateLyncContacts.ps1 script to the Scripts folder on the hard drive of the Lync server ('C:\Scripts' - create this if it does not exist)
+
+5) Edit the variables in the script as required (you should only need to edit the location of the scripts folder)
+
+6) Create a scheduled task to run the script daily in the early morning using the following settings:
+
+ - Service account: lyncservice (needs log on locally rights)
+ - General tab: Run whether user is logged in or not, Run with highest privileges, Hidden
+ - Triggers tab: Daily
+ - Actions tab: Start a program where the program is powershell.exe and the arguments are '-file "C:\Scripts\UpdateLyncContacts.ps1"'
+ - Settings tab: Allow task to be run on demand, Run task as soon as possible after a scheduled start is missed, If the task fails restart every 1 minute, Attempt to restart up to 3 times, Stop the task if it runs longer than 1 hour, If the running task does not end when requested force it to stop

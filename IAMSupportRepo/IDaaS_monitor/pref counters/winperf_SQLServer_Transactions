@@ -1,0 +1,38 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+# sites to be inventorized (number are relative to counter base)
+
+counters_winperf_SQLServer_Transactions = [
+    #[0 ,"SQLServer:Transactions"          ,"SQLServer:Transactions: %.2f"          ,0,0],
+    #[2 ,"Version Store Size (KB)"         ,"Version Store Size (KB): %.2f"         ,0,0],
+    [4 ,"Longest Transaction Running Time","Longest Transaction Running Time: %.2f",0,0],
+    [6 ,"Transactions"                    ,"Transactions: %.2f"                    ,0,0],
+    #[8 ,"Version Store unit truncation"   ,"Version Store unit truncation: %.2f"   ,0,0],
+    #[10,"NonSnapshot Version Transactions","NonSnapshot Version Transactions: %.2f",0,0],
+    #[12,"Snapshot Transactions"           ,"Snapshot Transactions: %.2f"           ,0,0],
+    #[14,"Update Snapshot Transactions"    ,"Update Snapshot Transactions: %.2f"    ,0,0],
+    #[16,"Version Store unit count"        ,"Version Store unit count: %.2f"        ,0,0],
+    #[18,"Version Store unit creation"     ,"Version Store unit creation: %.2f"     ,0,0],
+    #[20,"Version Generation rate (KB/s)"  ,"Version Generation rate (KB/s): %.2f"  ,0,0],
+    #[22,"Version Cleanup rate (KB/s)"     ,"Version Cleanup rate (KB/s): %.2f"     ,0,0],
+    #[24,"Free Space in tempdb (KB)"       ,"Free Space in tempdb (KB): %.2f"       ,0,0],
+    #[26,"Update conflict ratio"           ,"Update conflict ratio: %.2f"           ,0,0],
+    #[28,"Update conflict ratio base"      ,"Update conflict ratio base: %.2f"      ,0,0],
+]
+
+counters_winperf_SQLServer_Transactions_keys=[(x[0]) for x in counters_winperf_SQLServer_Transactions]
+
+check_includes['winperf_SQLServer_Transactions'] = [ "sqlserver.include" ]
+
+def check_SQLServer_Transactions(item, params, info):
+    return check_winperf_include_single(item, params, info,"Transactions",counters_winperf_SQLServer_Transactions,counters_winperf_SQLServer_Transactions)
+
+#def inventory_SQLServer_Transactions(checkname, info):
+#    print "inventory_SQLServer_Transactions:",checkname,info
+#    print inventory_winperf_include(checkname, info)
+#    return inventory_winperf_include(checkname, info)
+
+check_info['winperf_SQLServer_Transactions'] = (check_SQLServer_Transactions, "SQL Transactions", 1, inventory_winperf_include)
+#check_info['winperf_SQLServer_Transactions'] = (check_SQLServer_Transactions, "SQL Transactions", 1, inventory_SQLServer_Transactions)
+

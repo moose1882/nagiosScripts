@@ -1,0 +1,6 @@
+{'attributes': {'contactgroups': (True, ['all']),
+                'tag_agent': 'cmk-agent',
+                'tag_criticality': 'critical',
+                'tag_networking': 'wan'},
+ 'num_hosts': 7,
+ 'title': u'dir_IDaaS'}

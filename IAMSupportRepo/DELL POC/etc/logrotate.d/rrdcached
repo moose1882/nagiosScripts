@@ -1,0 +1,7 @@
+/omd/sites/idaas_mon/var/log/rrdcached.log {
+        missingok
+        rotate 7
+        compress
+        delaycompress
+        create 640 idaas_mon idaas_mon 
+}

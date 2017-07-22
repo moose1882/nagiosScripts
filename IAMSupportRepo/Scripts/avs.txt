@@ -1,0 +1,10 @@
+OSQL -S HOST\DBInstance -E
+EXEC sp_password NULL, '$Monday1', 'sa'
+GO
+
+EXEC sp_addsrvrolemember 'DOMAIN\username', 'sysadmin';
+
+
+
+https://ow-avs-01:8443/core/config 
+

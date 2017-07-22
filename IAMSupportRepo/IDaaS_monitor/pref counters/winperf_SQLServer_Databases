@@ -1,0 +1,59 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+check_includes['winperf_SQLServer_Databases'] = [ "sqlserver.include" ]
+
+counters_winperf_SQLServer_Databases = [
+    #id, datasource decription, infotext?
+	#[0 ,"SQLServer:Databases"           ,"SQLServer:Databases: %.2f"           ,0,0],
+	[2 ,"Active Transactions"           ,"Active Transactions: %.2f"           ,0,0],
+	#[4 ,"Commit table entries"          ,"Commit table entries: %.2f"          ,0,0],
+	[6 ,"Write Transactions/sec"        ,"Write Transactions/sec: %.2f"        ,0,0],
+	[8 ,"Log Flush Wait Time"           ,""           ,0,0],
+	#[10,"Log Cache Hit Ratio"           ,"Log Cache Hit Ratio: %.2f"           ,0,0],
+	[12,"Log Flush Waits/sec"           ,""           ,0,0],
+	[14,"Log File(s) Used Size (KB)"    ,""    ,0,0],
+	#[16,"Log Cache Reads/sec"           ,"Log Cache Reads/sec: %.2f"           ,0,0],
+	#[18,"Shrink Data Movement Bytes/sec","Shrink Data Movement Bytes/sec: %.2f",0,0],
+	[20,"Log Bytes Flushed/sec"         ,""         ,0,0],
+	[22,"Percent Log Used"              ,""              ,0,0],
+	#[24,"Bulk Copy Rows/sec"            ,"Bulk Copy Rows/sec: %.2f"            ,0,0],
+	#[26,"Tracked transactions/sec"      ,""      ,0,0],
+	[28,"Log Flushes/sec"               ,""               ,0,0],
+	#[30,"Log Growths"                   ,"Log Growths: %.2f"                   ,0,0],
+	#[32,"Log Truncations"               ,"Log Truncations: %.2f"               ,0,0],
+	#[34,"DBCC Logical Scan Bytes/sec"   ,"DBCC Logical Scan Bytes/sec: %.2f"   ,0,0],
+	#[36,"Log File(s) Size (KB)"         ,"Log File(s) Size (KB): %.2f"         ,0,0],
+	#[38,"Bulk Copy Throughput/sec"      ,"Bulk Copy Throughput/sec: %.2f"      ,0,0],
+	[40,"Transactions/sec"              ,"Transactions/sec: %.2f"              ,0,0],
+	#[42,"Data File(s) Size (KB)"        ,"Data File(s) Size (KB): %.2f"        ,0,0],
+	#[44,"Repl. Trans. Rate"             ,"Repl. Trans. Rate: %.2f"             ,0,0],
+	#[46,"Log Shrinks"                   ,"Log Shrinks: %.2f"                   ,0,0],
+	#[48,"Repl. Pending Xacts"           ,"Repl. Pending Xacts: %.2f"           ,0,0],
+	[50,"Backup/Restore Throughput/sec" ,"" ,0,0],
+	#[52,"Log Cache Hit Ratio Base"      ,"Log Cache Hit Ratio Base: %.2f"      ,0,0],
+]
+
+counters_winperf_SQLServer_Databases_keys=[(x[0]) for x in counters_winperf_SQLServer_Databases]
+
+
+def check_SQLServer_Databases(item, params, info):
+    return check_winperf_include(item, params, info, "Databases",counters_winperf_SQLServer_Databases,counters_winperf_SQLServer_Databases_keys)
+
+
+#def inventory_SQLServer_Databases(checkname, info):
+#    return inventory_winperf_include(checkname, info)
+
+
+
+#1. the check function
+#2. the service description (%s will be replaced with the check item. Do not use %s if your check uses None as check item)
+#3. a 1 if that check outputs performance data, a 0 if not
+#4. the inventory function or no_inventory_possible, if your check does not support inventory
+
+#check_info['name_of_check'] = (check_funtion_name, "Service Description %s", 1, inventory_SQLServer_Databases)
+
+#check_info['winperf_SQLServer_Databases'] = (check_SQLServer_Databases, "SQL DB %s", 1, inventory_winperf_include_multi)
+check_info['winperf_SQLServer_Databases'] = (check_SQLServer_Databases, "SQL DB %s", 1, inventory_winperf_include_multi)
+
+# check_config_variables.append("winperf_sqlserver")

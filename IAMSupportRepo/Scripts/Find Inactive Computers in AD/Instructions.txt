@@ -1,0 +1,16 @@
+1) Log in to an Active Directory Server
+
+2) Open a PowerShell prompt as an administrator
+
+3) Change the execution policy for scripts to remote signed using the following command "Set-ExecutionPolicy RemoteSigned"
+
+4) Copy the OldComputers.ps1 script to the desktop
+
+5) Edit the script to change the days inactive that you want to search on (variable $DaysInactive on line 3)
+
+6) Right-click the script file and choose the option to run with powershell, this should create a file on the desktop called OldComputers.csv
+
+7) Change the execution policy for scripts back to restricted using the following command "Set-ExecutionPolicy Restricted"
+
+8) Delete the copy of the script file that you created and move the csv file to a shared location
+

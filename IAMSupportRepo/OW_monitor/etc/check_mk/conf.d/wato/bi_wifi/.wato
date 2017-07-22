@@ -1,0 +1,3 @@
+{'attributes': {'contactgroups': (True, ['all']), 'tag_agent': 'snmp-only'},
+ 'num_hosts': 0,
+ 'title': u'bi_wifi'}

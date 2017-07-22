@@ -1,0 +1,27 @@
+@echo off
+:: backup-to-storage.cmd
+:: Backup of &lt;servername&gt; using WBADMIN.EXE
+
+:: Change settings below
+rem backup share UNC
+set backupshare=\\Storage\Backup
+
+rem files and folders to include. Add drives or folder you want to include and separate with a ,
+set include=c:
+:: Do not change settings below
+
+rem define date time variables for building the folder name
+SET varYYYY=%DATE:~10,4%
+SET varMM=%DATE:~4,2%
+SET varDD=%DATE:~7,2%
+SET varTodaysDate=%varDD%
+
+rem defining a new folder like \\&lt;networkdevice&gt;\&lt;backupshare&gt;\&lt;foldername&gt;\&lt;date&gt;
+set newfolder=%backupshare%\%computername%\%varDD%
+echo Creating %newfolder%
+
+mkdir %newfolder%
+
+rem run the backup
+echo Backing up %include% to %newfolder%
+wbadmin START BACKUP -backuptarget:%newfolder% -include:%include% -allCritical -vssFull -quiet

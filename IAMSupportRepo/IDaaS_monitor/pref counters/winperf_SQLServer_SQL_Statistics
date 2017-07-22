@@ -1,0 +1,35 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+# sites to be inventorized (number are relative to counter base)
+
+counters_winperf_SQLServer_SQL_Statistics = [
+    #[0 ,"SQLServer:SQL Statistics"     ,"SQLServer:SQL Statistics: %.2f"     ,0,0],
+    #[2 ,"Failed Auto-Params/sec"       ,"Failed Auto-Params/sec: %.2f"       ,0,0],
+    #[4 ,"Unsafe Auto-Params/sec"       ,"Unsafe Auto-Params/sec: %.2f"       ,0,0],
+    #[6 ,"Misguided plan executions/sec","Misguided plan executions/sec: %.2f",0,0],
+    #[8 ,"SQL Attention rate"           ,"SQL Attention rate: %.2f"           ,0,0],
+    #[10,"Forced Parameterizations/sec" ,"Forced Parameterizations/sec: %.2f" ,0,0],
+    #[12,"Safe Auto-Params/sec"         ,"Safe Auto-Params/sec: %.2f"         ,0,0],
+     [14,"Batch Requests/sec"           ,"Batch Requests/sec: %.2f"           ,0,0],
+    #[16,"Guided plan executions/sec"   ,"Guided plan executions/sec: %.2f"   ,0,0],
+     [18,"SQL Re-Compilations/sec"      ,"SQL Re-Compilations/sec: %.2f"      ,0,0],
+     [20,"SQL Compilations/sec"         ,"SQL Compilations/sec: %.2f"         ,0,0],
+    #[22,"Auto-Param Attempts/sec"      ,"Auto-Param Attempts/sec: %.2f"      ,0,0],
+]
+
+counters_winperf_SQLServer_SQL_Statistics_keys=[(x[0]) for x in counters_winperf_SQLServer_SQL_Statistics]
+
+check_includes['winperf_SQLServer_SQL_Statistics'] = [ "sqlserver.include" ]
+
+#multi_instance=0
+
+def check_SQLServer_SQL_Statistics(item, params, info):
+    return check_winperf_include_single(item, params, info,"Statistics",counters_winperf_SQLServer_SQL_Statistics,counters_winperf_SQLServer_SQL_Statistics_keys)
+
+
+
+#check_info['winperf_SQLServer_SQL_Statistics'] = (check_SQLServer_SQL_Statistics, "SQL Statistics", 1, inventory_winperf_include)
+check_info['winperf_SQLServer_SQL_Statistics'] = (check_SQLServer_SQL_Statistics, "SQL Statistics", 1, inventory_winperf_include)
+
+# check_config_variables.append("winperf_sqlserver")
